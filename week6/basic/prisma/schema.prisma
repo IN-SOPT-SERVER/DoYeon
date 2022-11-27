@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Day {
+  id   Int       @id @unique @default(autoincrement())
+  date DateTime? @db.Date
+  Trip Trip      @relation(fields: [id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "trpId")
+}
+
+model Trip {
+  id        Int       @id @default(autoincrement())
+  city      String    @db.Char(3)
+  startDate DateTime? @default(dbgenerated("'2023-02-04'::date")) @db.Date
+  endDate   DateTime? @default(dbgenerated("'2023-02-06'::date")) @db.Date
+  Day       Day?
+}
+
+model User {
+  id       Int     @id @unique @default(autoincrement())
+  userName String 
+  age      Int?
+  email    String? @db.VarChar(400)
+  password String @db.VarChar(400)
+}
